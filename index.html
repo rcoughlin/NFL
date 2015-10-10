@@ -1,0 +1,16 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script type=text/javascript>
+  $(function() {
+    $('a#calculate').bind('click', function() {
+      $.getJSON('http://127.0.0.1:5000/', data, function(data) {
+        $("#result").text(data.result);
+      });
+      return false;
+    });
+  });
+</script>
+<h1>Top Rushers For the Week</h1>
+<p>year<input type=text size=5 name=year> 
+   week<input type=text size=5 name=week>
+   <span id="result"></span>
+<p><a href=# id=calculate>get top rushers</a>
