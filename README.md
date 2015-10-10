@@ -1,2 +1,2 @@
 # NFL
-simple app that queries nflgame api
+Playing around with Flask - a simple app that queries nflgame api
