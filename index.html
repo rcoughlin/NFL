@@ -15,7 +15,7 @@
             });
 
             $.getJSON(
-                'http://127.0.0.1:5000/?inputYear=' + year + '&inputWeek=' + week,
+                './?inputYear=' + year + '&inputWeek=' + week,
                 function(data) {
                     $('#result').html(data.join('<br />'));
                 }
