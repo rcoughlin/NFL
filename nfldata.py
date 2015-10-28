@@ -1,4 +1,6 @@
-from flask import Flask
+import os
+
+from flask import Flask, send_from_directory
 from flask import jsonify
 from flask import request
 from flask.ext.cors import CORS
@@ -6,8 +8,14 @@ import nflgame
 import json
 import requests
 
-app = Flask(__name__)
+FILE_PATH = os.path.dirname(os.path.realpath('__file__'))
+
+app = Flask(__name__, static_url_path=FILE_PATH)
 cors = CORS(app)
+
+@app.route('/index.html', methods=['GET'])
+def metrics():
+    return send_from_directory(FILE_PATH, 'index.html')
 
 @app.route('/', methods=['GET'])
 def hello_world():
@@ -25,5 +33,6 @@ def hello_world():
         print messages
         return json.dumps(messages)
     return False
+
 if __name__ == '__main__':
     app.run(debug=True)
