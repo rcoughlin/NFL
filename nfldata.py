@@ -18,11 +18,15 @@ cors = CORS(app)
 
 @app.route('/', methods=['GET'])
 def serve_index_asset():
-    return app.send_static_file('index.html')
+    return send_static_file('index.html')
+
+@app.route('/plays', methods=['GET'])
+def serve_play_by_play_asset():
+    return send_static_file('html/plays.html')
 
 @app.route('/<path:path>', methods=['GET'])
 def serve_static_assets(path):
-    return app.send_static_file(path)
+    return send_static_file(path)
 
 @app.route('/rushing_yds.json', methods=['GET'])
 def rushing_yards():
@@ -41,6 +45,9 @@ def rushing_yards():
             player.rushing_tds))
 
     return json.dumps(messages)
+
+def send_static_file(path):
+    return app.send_static_file(path)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
