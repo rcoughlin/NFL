@@ -6,19 +6,48 @@
     border:none;
     outline:none;
     box-sizing:border-box;
-    font-family:sans-serif;
+    font:menu;
 }
 
 body {
-    padding:15px;
+    margin:0 auto;
+    padding:25px;
+    width:500px;
 }
 
-#result {
+h1 {
+    font-size:20px;
+}
+
+form {
     margin-top:15px;
-    font-size:15px;
-    line-height:22px;
+}
+
+label, input {
+    display:block;
+}
+
+label, input[type=submit] {
+    margin-top:10px;
 }
 
 input {
     border:1px solid;
+}
+
+#result {
+    margin-top:25px;
+    font-size:15px;
+    line-height:22px;
+}
+
+@media all and (max-width: 420px) {
+    body {
+        padding:15px;
+        width:100%;
+    }
+
+    #result {
+        font-size:13px;
+    }
 }
