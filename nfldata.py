@@ -1,38 +1,107 @@
+#!/usr/bin/env python
+
 import os
 
-from flask import Flask, send_from_directory
+from flask import Flask
 from flask import jsonify
 from flask import request
 from flask.ext.cors import CORS
+
 import nflgame
 import json
 import requests
 
-FILE_PATH = os.path.dirname(os.path.realpath('__file__'))
 
-app = Flask(__name__, static_url_path=FILE_PATH)
+app = Flask(__name__, static_url_path='/static')
 cors = CORS(app)
 
-@app.route('/index.html', methods=['GET'])
-def metrics():
-    return send_from_directory(FILE_PATH, 'index.html')
 
 @app.route('/', methods=['GET'])
-def hello_world():
-    if request.method == 'GET':
-        inputYear = request.args['inputYear'] or request.args.getList('inputYear')[0]
-        inputWeek = request.args['inputWeek'] or request.args.getList('inputWeek')[0]
+def serve_index_asset():
+    return send_static_file('index.html')
 
-        games = nflgame.games(int(inputYear), week=int(inputWeek))
-        players = nflgame.combine_game_stats(games)
-        messages=[]
 
-        for p in players.rushing().sort('rushing_yds').limit(10):
-           msg = '%s %d carries for %d yards and %d TDs' %(p, p.rushing_att, p.rushing_yds, p.rushing_tds)
-           messages.append(msg)
-        print messages
-        return json.dumps(messages)
-    return False
+@app.route('/plays', methods=['GET'])
+def serve_play_by_play_asset():
+    return send_static_file('html/plays.html')
+
+
+@app.route('/<path:path>', methods=['GET'])
+def serve_static_assets(path):
+    return send_static_file(path)
+
+
+@app.route('/rushing_yds.json', methods=['GET'])
+def rushing_yards():
+
+    # TODO commonize
+    year = int(request.args.getlist('year')[0])
+    week = int(request.args.getlist('week')[0])
+
+    games = fetch_games(inputYear, inputWeek)
+    players = nflgame.combine_game_stats(games)
+
+    messages = []
+    for player in players.rushing().sort('rushing_yds'):
+        messages.append('{} {} carries for {} yards and {} TDs'.format(
+            player, player.rushing_att, player.rushing_yds,
+            player.rushing_tds))
+
+    return json.dumps(messages)
+
+
+@app.route('/play_by_play.json', methods=['GET'])
+def play_by_play():
+
+    # TODO commonize
+    name = request.args.getlist('name')[0]
+    year = int(request.args.getlist('year')[0])
+    week = int(request.args.getlist('week')[0])
+
+    print 'HERE'
+
+    '''
+    Try to perform some arithmetic on our inputs, if they aren't ints, our API
+    will throw errors
+    '''
+    try:
+        year = year + 1 - 1
+        week = week + 1 - 1
+    except TypeError as e:
+        return e
+
+    plays = []
+    if name and year and week:
+        try:
+            nfl_game_plays = fetch_plays(name, year, week)
+            print nfl_game_plays
+            for play in nfl_game_plays:
+                print play
+                plays.append(play.data)
+        except TypeError as e: pass
+
+    return json.dumps(plays)
+
+
+def fetch_games(year, week):
+    return nflgame.games(year, week)
+
+
+def fetch_player(name):
+    return nflgame.find(name)
+
+
+def fetch_plays(name, year, week):
+    player = nflgame.find(name)
+    if len(player) > 0:
+        return player[0].plays(year, week)
+    else:
+        return None
+
+
+def send_static_file(path):
+    return app.send_static_file(path)
+
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Meta -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height" />
+
+        <title>NFL</title>
+        <link rel="stylesheet" type="text/css" href="/css/index.css">
+    </head>
+    <body>
+        <h1>Top Rushers For the Week</h1>
+
+        <form action=''>
+            <label for="year">Year</label>
+            <input type="number" min="1990" max="2015" pattern="[0-9]{4}"
+                name="year" value="2015" placeholder="Year">
+            <label for="week">Week</label>
+            <input type="number" min="1" max="16" pattern="[0-9]{1,2}"
+                name="week" value="1" placeholder="Week">
+            <label for="name">Player Name</label>
+            <input type="text" name="name" placeholder="Travis Kelce">
+            <input type="submit" value="Get Top Rushers">
+        </form>
+
+        <div id="result"></div>
+
+        <script type="text/javascript"
+            src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js">
+        </script>
+        <script type="text/javascript" src="/js/index.js"></script>
+    </body>
+</html>

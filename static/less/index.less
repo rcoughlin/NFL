@@ -1,0 +1,67 @@
+// out:../css/index.css, compress:true
+
+* {
+    margin:0;
+    padding:0;
+    border:none;
+    outline:none;
+    box-sizing:border-box;
+    font:menu;
+}
+
+body {
+    margin:0 auto;
+    padding:25px;
+    width:500px;
+}
+
+h1 {
+    font-size:20px;
+}
+
+form {
+    margin-top:15px;
+}
+
+label, input {
+    display:block;
+}
+
+label, input[type=submit] {
+    margin-top:10px;
+}
+
+input {
+    border:1px solid;
+    cursor:pointer;
+}
+
+input[type=number], input[type=text] {
+    margin-top:3px;
+    padding:5px 10px;
+}
+
+input[type=text] {
+    width:300px;
+}
+
+input[type=submit] {
+    padding:5px;
+}
+
+#result {
+    margin-top:25px;
+    font-size:15px;
+    line-height:22px;
+}
+
+@media all and (max-width: 420px) {
+    body {
+        padding:15px;
+        width:100%;
+    }
+
+    #result {
+        font-size:13px;
+    }
+}
