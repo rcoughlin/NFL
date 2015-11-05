@@ -18,20 +18,27 @@ cors = CORS(app)
 
 @app.route('/', methods=['GET'])
 def serve_index_asset():
-    return app.send_static_file('index.html')
+    return send_static_file('index.html')
+
+
+@app.route('/plays', methods=['GET'])
+def serve_play_by_play_asset():
+    return send_static_file('html/plays.html')
+
 
 @app.route('/<path:path>', methods=['GET'])
 def serve_static_assets(path):
-    return app.send_static_file(path)
+    return send_static_file(path)
+
 
 @app.route('/rushing_yds.json', methods=['GET'])
 def rushing_yards():
-    inputYear = int(request.args['inputYear'] or \
-        request.args.getList('inputYear')[0])
-    inputWeek = int(request.args['inputWeek'] or \
-        request.args.getList('inputWeek')[0])
 
-    games = nflgame.games(inputYear, inputWeek)
+    # TODO commonize
+    year = int(request.args.getlist('year')[0])
+    week = int(request.args.getlist('week')[0])
+
+    games = fetch_games(inputYear, inputWeek)
     players = nflgame.combine_game_stats(games)
 
     messages = []
@@ -41,6 +48,60 @@ def rushing_yards():
             player.rushing_tds))
 
     return json.dumps(messages)
+
+
+@app.route('/play_by_play.json', methods=['GET'])
+def play_by_play():
+
+    # TODO commonize
+    name = request.args.getlist('name')[0]
+    year = int(request.args.getlist('year')[0])
+    week = int(request.args.getlist('week')[0])
+
+    print 'HERE'
+
+    '''
+    Try to perform some arithmetic on our inputs, if they aren't ints, our API
+    will throw errors
+    '''
+    try:
+        year = year + 1 - 1
+        week = week + 1 - 1
+    except TypeError as e:
+        return e
+
+    plays = []
+    if name and year and week:
+        try:
+            nfl_game_plays = fetch_plays(name, year, week)
+            print nfl_game_plays
+            for play in nfl_game_plays:
+                print play
+                plays.append(play.data)
+        except TypeError as e: pass
+
+    return json.dumps(plays)
+
+
+def fetch_games(year, week):
+    return nflgame.games(year, week)
+
+
+def fetch_player(name):
+    return nflgame.find(name)
+
+
+def fetch_plays(name, year, week):
+    player = nflgame.find(name)
+    if len(player) > 0:
+        return player[0].plays(year, week)
+    else:
+        return None
+
+
+def send_static_file(path):
+    return app.send_static_file(path)
+
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
