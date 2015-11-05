@@ -23,8 +23,12 @@
             $.getJSON(parameterizedUrl, function(data) {
                 var html;
 
+                console.log(data);
+
                 if (playByPlay) {
-                    html = JSON.stringify(data);
+                    html = data.map(function(v) {
+                        return [ 'Q' + v.qtr, v.desc ].join(' ');
+                    }).join('<br />');
                 } else {
                     html = data.slice(0, obj.limit).join('<br />');
                 }
