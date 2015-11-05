@@ -1,8 +1,8 @@
 (function(w, d) {
     'use strict';
 
-    var playByPlay = !!w.location.pathname.indexOf('play'),
-        url = './' + (playByPlay > -1 ? 'play_by_play' : 'rushing_yds') +
+    var playByPlay = w.location.pathname.indexOf('play') > -1,
+        url = './' + (playByPlay > -1 ? 'plays_by_player' : 'rushing_yds') +
             '.json?';
 
     $(d).ready(function() {

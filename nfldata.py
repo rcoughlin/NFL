@@ -39,7 +39,9 @@ def rushing_yards():
     week = int(request.args.getlist('week')[0])
 
     games = fetch_games(inputYear, inputWeek)
+    print games
     players = nflgame.combine_game_stats(games)
+    print players
 
     messages = []
     for player in players.rushing().sort('rushing_yds'):
@@ -50,15 +52,13 @@ def rushing_yards():
     return json.dumps(messages)
 
 
-@app.route('/play_by_play.json', methods=['GET'])
-def play_by_play():
+@app.route('/plays_by_player.json', methods=['GET'])
+def plays_by_player():
 
     # TODO commonize
     name = request.args.getlist('name')[0]
     year = int(request.args.getlist('year')[0])
     week = int(request.args.getlist('week')[0])
-
-    print 'HERE'
 
     '''
     Try to perform some arithmetic on our inputs, if they aren't ints, our API
@@ -81,16 +81,51 @@ def play_by_play():
     return json.dumps(plays)
 
 
-def fetch_games(year, week):
-    return nflgame.games(year, week)
+@app.route('/plays_by_team.json', methods=['GET'])
+def plays_by_team():
+
+    # TODO commonize
+    team = request.args.getlist('team')[0]
+    year = int(request.args.getlist('year')[0])
+    week = int(request.args.getlist('week')[0])
+
+    '''
+    Try to perform some arithmetic on our inputs, if they aren't ints, our API
+    will throw errors
+    '''
+    try:
+        year = year + 1 - 1
+        week = week + 1 - 1
+    except TypeError as e:
+        return e
+
+    plays = []
+    if team and year and week:
+        try:
+            nfl_game_plays = nflgame.combine_plays(fetch_games(year, week, team))
+            for play in nfl_game_plays:
+                plays.append(play.data)
+        except TypeError as e: pass
+
+    return json.dumps(plays)
 
 
-def fetch_player(name):
+def fetch_games(year, week, team = None):
+    games = nflgame.games(year, week)
+    if team:
+        for game in games:
+            if game.home == team or game.away == team:
+                return [ game ]
+    return games
+
+
+def fetch_player(name, team):
     return nflgame.find(name)
 
 
 def fetch_plays(name, year, week):
     player = fetch_player(name)
+    print player
     if len(player) > 0:
         return player[0].plays(year, week)
     else:
