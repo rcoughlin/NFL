@@ -39,9 +39,7 @@ def rushing_yards():
     week = int(request.args.getlist('week')[0])
 
     games = fetch_games(inputYear, inputWeek)
-    print games
     players = nflgame.combine_game_stats(games)
-    print players
 
     messages = []
     for player in players.rushing().sort('rushing_yds'):
