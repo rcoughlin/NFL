@@ -74,9 +74,7 @@ def play_by_play():
     if name and year and week:
         try:
             nfl_game_plays = fetch_plays(name, year, week)
-            print nfl_game_plays
             for play in nfl_game_plays:
-                print play
                 plays.append(play.data)
         except TypeError as e: pass
 
@@ -92,7 +90,7 @@ def fetch_player(name):
 
 
 def fetch_plays(name, year, week):
-    player = nflgame.find(name)
+    player = fetch_player(name)
     if len(player) > 0:
         return player[0].plays(year, week)
     else:
