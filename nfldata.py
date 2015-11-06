@@ -38,7 +38,7 @@ def rushing_yards():
     year = int(request.args.getlist('year')[0])
     week = int(request.args.getlist('week')[0])
 
-    games = fetch_games(inputYear, inputWeek)
+    games = fetch_games(year, week)
     players = nflgame.combine_game_stats(games)
 
     messages = []
@@ -83,9 +83,14 @@ def plays_by_player():
 def plays_by_team():
 
     # TODO commonize
-    team = request.args.getlist('team')[0]
+    name = request.args.getlist('name')[0]
     year = int(request.args.getlist('year')[0])
     week = int(request.args.getlist('week')[0])
+    team = None
+
+    players = fetch_player(name)
+    if len(players) > 0:
+        team = players[0].team
 
     '''
     Try to perform some arithmetic on our inputs, if they aren't ints, our API
@@ -117,13 +122,12 @@ def fetch_games(year, week, team = None):
     return games
 
 
-def fetch_player(name, team):
+def fetch_player(name):
     return nflgame.find(name)
 
 
 def fetch_plays(name, year, week):
     player = fetch_player(name)
-    print player
     if len(player) > 0:
         return player[0].plays(year, week)
     else:

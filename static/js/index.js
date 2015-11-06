@@ -2,7 +2,7 @@
     'use strict';
 
     var playByPlay = w.location.pathname.indexOf('play') > -1,
-        url = './' + (playByPlay > -1 ? 'plays_by_player' : 'rushing_yds') +
+        url = './' + (playByPlay ? 'plays_by_team' : 'rushing_yds') +
             '.json?';
 
     $(d).ready(function() {
@@ -22,8 +22,6 @@
             parameterizedUrl = url + stringifyQueryParams(obj);
             $.getJSON(parameterizedUrl, function(data) {
                 var html;
-
-                console.log(data);
 
                 if (playByPlay) {
                     html = data.map(function(v) {
