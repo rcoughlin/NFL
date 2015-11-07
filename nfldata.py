@@ -107,7 +107,8 @@ def plays_by_team():
         try:
             nfl_game_plays = nflgame.combine_plays(fetch_games(year, week, team))
             for play in nfl_game_plays:
-                plays.append(play.data)
+                if team == play.posteam:
+                    plays.append(play.data)
         except TypeError as e: pass
 
     return json.dumps(plays)
