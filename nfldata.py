@@ -38,7 +38,7 @@ def rushing_yards():
     year = int(request.args.getlist('year')[0])
     week = int(request.args.getlist('week')[0])
 
-    games = fetch_games(inputYear, inputWeek)
+    games = fetch_games(year, week)
     players = nflgame.combine_game_stats(games)
 
     messages = []
@@ -50,15 +50,13 @@ def rushing_yards():
     return json.dumps(messages)
 
 
-@app.route('/play_by_play.json', methods=['GET'])
-def play_by_play():
+@app.route('/plays_by_player.json', methods=['GET'])
+def plays_by_player():
 
     # TODO commonize
     name = request.args.getlist('name')[0]
     year = int(request.args.getlist('year')[0])
     week = int(request.args.getlist('week')[0])
-
-    print 'HERE'
 
     '''
     Try to perform some arithmetic on our inputs, if they aren't ints, our API
@@ -81,8 +79,48 @@ def play_by_play():
     return json.dumps(plays)
 
 
-def fetch_games(year, week):
-    return nflgame.games(year, week)
+@app.route('/plays_by_team.json', methods=['GET'])
+def plays_by_team():
+
+    # TODO commonize
+    name = request.args.getlist('name')[0]
+    year = int(request.args.getlist('year')[0])
+    week = int(request.args.getlist('week')[0])
+    team = None
+
+    players = fetch_player(name)
+    if len(players) > 0:
+        team = players[0].team
+
+    '''
+    Try to perform some arithmetic on our inputs, if they aren't ints, our API
+    will throw errors
+    '''
+    try:
+        year = year + 1 - 1
+        week = week + 1 - 1
+    except TypeError as e:
+        return e
+
+    plays = []
+    if team and year and week:
+        try:
+            nfl_game_plays = nflgame.combine_plays(fetch_games(year, week, team))
+            for play in nfl_game_plays:
+                if team == play.posteam:
+                    plays.append(play.data)
+        except TypeError as e: pass
+
+    return json.dumps(plays)
+
+
+def fetch_games(year, week, team = None):
+    games = nflgame.games(year, week)
+    if team:
+        for game in games:
+            if game.home == team or game.away == team:
+                return [ game ]
+    return games
 
 
 def fetch_player(name):
