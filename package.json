@@ -1,0 +1,23 @@
+{
+  "name": "nfl",
+  "version": "0.0.1",
+  "description": "Playing around with Flask - a simple app that queries nflgame api",
+  "main": "index.js",
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rcoughlin/NFL.git"
+  },
+  "author": "Joe Groseclose <@benderTheCrime>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rcoughlin/NFL/issues"
+  },
+  "homepage": "https://github.com/rcoughlin/NFL#readme",
+  "dependencies": {
+    "babel-core": "^6.1.2",
+    "webpack": "^1.12.3"
+  }
+}
