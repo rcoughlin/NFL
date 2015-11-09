@@ -1,14 +1,4 @@
-// (function(w, d) {
-//     'use strict';
-//
-//     // TODO doing this in this fashion makes it impossible to share resources
-//     ReactDOM.render(
-//         <h1></h1>,
-//         d.getElementById('container')
-//     );
-// })(window, document);
-
-
+import { default as React } from       '../../bower_components/react/react';
+import { default as ReactDOM } from    '../../bower_components/react-dom/react-dom';
 
 const W = window, D = W.document;
-
