@@ -158,5 +158,6 @@ share
 bin
 include
 pip-selfcheck.json
+ignore.json
 static/js/*.js
 static/css/*.css

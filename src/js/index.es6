@@ -1,8 +1,8 @@
 import { default as $ } from        '../../bower_components/jquery/dist/jquery';
+import { default as values } from   './mixpanel.es6';
 
 const W = window,
     D = W.document,
-    inputs = $('input:not([type=submit]):not([type=checkbox])'),
     playToggleCheckbox = $('input[name=toggle]'),
     playToggleParent = playToggleCheckbox.parent();
 let playByPlay = W.location.pathname.indexOf('play') > -1,
@@ -20,15 +20,8 @@ playToggleCheckbox.click(function(e) {
 $('form').submit(function(e) {
     e.preventDefault();
 
-    let obj = {},
+    let obj = values(),
         parameterizedUrl;
-
-    // Collect values from inputs indiscriminately
-    inputs.each(function(i, v) {
-        let val = v.value,
-            numberVal = parseInt(val);
-        obj[ v.name ] = !isNaN(numberVal) ? numberVal : val ? val : null;
-    });
 
     parameterizedUrl = url + stringifyQueryParams(obj);
     $.getJSON(parameterizedUrl, function(data) {
