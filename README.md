@@ -9,3 +9,4 @@ npm i
 bower install
 gulp
 ```
+These commands also must be run after the app has been pushed to Heroku.
