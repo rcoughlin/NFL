@@ -34,7 +34,6 @@ class PlayTable extends Component {
 function createQuarters(data) {
     QUARTERS.each((i, v) => {
         let rows = data.filter(v => v.qtr === i + 1);
-        debugger;
         React.render(<PlayTable data={rows} />, v);
     });
 }
