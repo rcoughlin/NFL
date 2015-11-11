@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "gulp test",
-    "preinstall": "npm i -g bower gulp gulp-cli",
+    "preinstall": "npm i -g bower",
     "postinstall": "bower install && gulp"
   },
   "repository": {
