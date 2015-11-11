@@ -1,5 +1,4 @@
 import React, { Component } from            '../../../bower_components/react/react-with-addons';
-import { default as ReactDOM } from         '../../../bower_components/react-dom/react-dom';
 import { default as $ } from                '../../../bower_components/jquery/dist/jquery';
 
 const QUARTERS = $('.quarter');
