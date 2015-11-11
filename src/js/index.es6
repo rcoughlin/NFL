@@ -1,5 +1,6 @@
 import { default as $ } from        '../../bower_components/jquery/dist/jquery';
 import { default as values } from   './mixpanel.es6';
+import { default as grid } from     './components/grid.es6';
 
 const W = window,
     D = W.document,
@@ -33,40 +34,42 @@ $('form').submit(function(e) {
 
             // For team plays endpoint
             if (playByPlay) {
-                let html = '';
+                // let html = '';
+
+                grid(data);
 
                 // Loop through data, find associated players, build html
-                $(data).each((i, v) => {
-                    const players = getPlayersFromPlayData(v),
-                        player = `${
-                            obj.name.split(' ')[ 0 ].charAt(0)
-                        }.${
-                            obj.name.split(' ').pop()
-                        }`;
-
-                    html += `
-                        <div class="play ${
-                            players.indexOf(player) > -1 ? 'bold' : ''
-                        }">
-                            Q${v.qtr} ${v.desc}
-                        </div>
-                    `;
-                });
+                // $(data).each((i, v) => {
+                //     const players = getPlayersFromPlayData(v),
+                //         player = `${
+                //             obj.name.split(' ')[ 0 ].charAt(0)
+                //         }.${
+                //             obj.name.split(' ').pop()
+                //         }`;
+                //
+                //     html += `
+                //         <div class="play ${
+                //             players.indexOf(player) > -1 ? 'bold' : ''
+                //         }">
+                //             Q${v.qtr} ${v.desc}
+                //         </div>
+                //     `;
+                // });
 
                 // Collect regular (non player) plays and set html
-                plays = result.html(
-                    html.replace(/\s{2,}/g, '')
-                ).find(':not(.bold)').hide();
+                // plays = result.html(
+                //     html.replace(/\s{2,}/g, '')
+                // ).find(':not(.bold)').hide();
 
                 // Iff there is html and it is not our error, show
                 // the checkbox, set to false
-                if (html) {
-                    playToggleCheckbox.attr(
-                        'checked', false
-                    ).parent().show();
-                } else {
-                    playToggleParent.hide();
-                }
+                // if (html) {
+                //     playToggleCheckbox.attr(
+                //         'checked', false
+                //     ).parent().show();
+                // } else {
+                //     playToggleParent.hide();
+                // }
             } else {
 
                 // For root "yards" endpoint

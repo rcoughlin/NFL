@@ -51,7 +51,9 @@ function doWebpack(cb) {
                 }
             ],
         },
-        resolve: {},
+        resolve: {
+            React: '../../bower_components/react/react'
+        },
         output: {
             path: JS_DIR,
             filename: FILENAME
