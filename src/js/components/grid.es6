@@ -1,5 +1,5 @@
-import React, { Component } from            '../../../bower_components/react/react';
-import ReactDOM from                        '../../../bower_components/react/react-dom';
+import React, { Component } from            '../../../bower_components/react/react-with-addons';
+import { default as ReactDOM } from         '../../../bower_components/react-dom/react-dom';
 import { default as $ } from                '../../../bower_components/jquery/dist/jquery';
 
 const QUARTERS = $('.quarter');
@@ -35,7 +35,8 @@ class PlayTable extends Component {
 function createQuarters(data) {
     QUARTERS.each((i, v) => {
         let rows = data.filter(v => v.qtr === i + 1);
-        ReactDOM.render(<PlayTable data={rows} />, v);
+        debugger;
+        React.render(<PlayTable data={rows} />, v);
     });
 }
 

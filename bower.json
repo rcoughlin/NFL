@@ -11,9 +11,8 @@
   "license": "MIT",
   "dependencies": {
     "jquery": "~2.1.4",
-    "react": "~0.14.2",
-    "react-dom": "~0.1.0",
+    "react": "~0.13.x",
     "mixpanel": "~2.7.1",
-    "react-data-grid": "~0.13.13"
+    "react-dom": "~0.1.0"
   }
 }
