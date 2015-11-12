@@ -13,7 +13,8 @@ try {
 // Check existing elements
 const INPUTS = $('input:not([type=submit]):not([type=checkbox])'),
     VIEW_PLAYS_BUTTON = $('input[type=submit]'),
-    SHOW_ALL_PLAYS_CHECKBOX = $('input[type=checkbox]');
+    SHOW_ALL_PLAYS_CHECKBOX = $('input[type=checkbox]'),
+    QUARTERS = $('.quarters');
 
 if (ignore === false) {
 
@@ -22,24 +23,39 @@ if (ignore === false) {
 
     if (VIEW_PLAYS_BUTTON.length) {
         VIEW_PLAYS_BUTTON.click(function() {
-            const inputValues = getAllInputValues();
+            const INPUT_VALUES = getAllInputValues();
 
             mixpanel.track('View Plays', {
-                week: inputValues.week,
-                year: inputValues.year,
-                player: inputValues.name
+                week: INPUT_VALUES.week,
+                year: INPUT_VALUES.year,
+                player: INPUT_VALUES.name
             });
         });
     }
 
     if (SHOW_ALL_PLAYS_CHECKBOX.length) {
         SHOW_ALL_PLAYS_CHECKBOX.click(function() {
-            const inputValues = getAllInputValues();
+            const INPUT_VALUES = getAllInputValues();
 
             mixpanel.track('Show All Plays', {
-                week: inputValues.week,
-                year: inputValues.year,
-                player: inputValues.name
+                week: INPUT_VALUES.week,
+                year: INPUT_VALUES.year,
+                player: INPUT_VALUES.name
+            });
+        });
+    }
+
+    if (QUARTERS.length) {
+        QUARTERS.click(function(e) {
+            const INPUT_VALUES = getAllInputValues(),
+                QUARTER = $(this).closest('.quarter');
+
+            mixpanel.track('Show All Plays', {
+                week: INPUT_VALUES.week,
+                year: INPUT_VALUES.year,
+                player: INPUT_VALUES.name,
+                quarter: QUARTER.attr('data-attr'),
+                action: QUARTER.hasClass('collapsed') ? 'expand' : 'collapse'
             });
         });
     }
