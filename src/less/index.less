@@ -47,14 +47,29 @@ input[type=text] {
     width:300px;
 }
 
-input[type=submit] {
-    padding:5px;
-}
-
 #result {
     margin-top:15px;
     font-size:15px;
     line-height:22px;
+
+
+}
+
+.quarter {
+    div {
+        overflow:scroll;
+        max-height:1000px;
+        transition:500ms;
+    }
+    &.collapsed {
+        div {
+            max-height:0;
+        }
+    }
+}
+
+.non-player {
+    display:none;
 }
 
 .bold {

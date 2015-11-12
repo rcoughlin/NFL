@@ -1,3 +1,4 @@
-import                                 './index.es6';
+import                              './index.es6';
 
-const W = window, D = W.document;
+const W = window,
+    D = W.document;

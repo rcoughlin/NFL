@@ -161,3 +161,4 @@ pip-selfcheck.json
 ignore.json
 static/js/*.js
 static/css/*.css
+static/css/*.css.map

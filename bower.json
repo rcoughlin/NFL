@@ -12,6 +12,8 @@
   "dependencies": {
     "jquery": "~2.1.4",
     "react": "~0.14.x",
-    "mixpanel": "~2.7.1"
+    "mixpanel": "~2.7.1",
+    "foundation": "~5.5.3",
+    "react-dom": "~0.1.0"
   }
 }
