@@ -1,5 +1,4 @@
 import React, { Component } from            '../../../bower_components/react/react-with-addons';
-import ReactDOM from                        '../../../bower_components/react/react-dom';
 import { default as $ } from                '../../../bower_components/jquery/dist/jquery';
 
 // TODO Refactor the way this adds to the page
@@ -66,7 +65,7 @@ function createQuarters(data, targetPlayer) {
 
     QUARTERS.each((i, v) => {
         let rows = playObj[ i + 1 ];
-        ReactDOM.render(<PlayTable data={rows} />, v);
+        React.render(<PlayTable data={rows} />, v);
     });
 }
 
