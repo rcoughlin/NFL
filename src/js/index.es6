@@ -21,12 +21,7 @@ PLAY_TOGGLE_CHECKBOX.click(e => {
     }
 });
 
-QUARTERS.click(e => {
-    const QUARTER = $(e.target).closest('.quarter');
-    QUARTERS.addClass('collapsed');
-    QUARTER.removeClass('collapsed');
-});
-
+QUARTERS.click(e => $(e.target).closest('.quarter').toggleClass('collapsed'));
 
 $('form').submit(function(e) {
     e.preventDefault();
