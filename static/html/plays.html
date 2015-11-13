@@ -6,17 +6,11 @@
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height" />
 
         <title>NFL</title>
+        <link rel="stylesheet" type="text/css" href="/css/normalize.min.css">
+        <link rel="stylesheet" type="text/css" href="/css/foundation.min.css">
         <link rel="stylesheet" type="text/css" href="/css/index.css">
 
-        <script defer type="text/javascript" src="/build/react.js"></script>
-        <script defer type="text/javascript" src="/build/react-dom.js"></script>
-        <script defer type="text/javascript"
-            src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js">
-        </script>
-        <script defer type="text/javascript"
-            src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js">
-        </script>
-        <script defer type="text/babel" src="/js/index.js"></script>
+        <script defer type="text/javascript" src="/js/play.js"></script>
     </head>
     <body>
         <h1>Plays by Player</h1>
@@ -25,23 +19,26 @@
             <label for="year">Year</label>
             <input type="number" min="1990" max="2015" pattern="[0-9]{4}"
                 name="year" value="2015" placeholder="Year">
+
             <label for="week">Week</label>
             <input type="number" min="1" max="16" pattern="[0-9]{1,2}"
                 name="week" value="1" placeholder="Week">
+
             <label for="name">Player Name</label>
             <input type="text" name="name" placeholder="Travis Kelce">
-            <input type="submit" value="View Plays">
-        </form>
+            <input class="button" type="submit" value="View Plays">
 
-        <!--
-            NOTE: This div is included to hide the checkbox and label
-            collectively
-        -->
-        <div>
             <label for="toggle">Show All Plays</label>
             <input type="checkbox" name="toggle">
-        </div>
+        </form>
 
-        <div id="result"></div>
+        <div id="result">
+
+            <!-- TODO make these not have to be repeated -->
+            <div class="quarter" data-attr="1"></div>
+            <div class="quarter collapsed" data-attr="1"></div>
+            <div class="quarter collapsed" data-attr="1"></div>
+            <div class="quarter collapsed" data-attr="1"></div>
+        </div>
     </body>
 </html>

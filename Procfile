@@ -1,1 +1,1 @@
-web: python nfldata.py
+web: python app.py
