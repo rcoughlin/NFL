@@ -47,12 +47,18 @@ input[type=text] {
     width:300px;
 }
 
+table tr:nth-of-type(even) {
+    background-color:white;
+}
+
+tr td, .bold {
+    font-weight:bold;
+}
+
 #result {
     margin-top:15px;
     font-size:15px;
     line-height:22px;
-
-
 }
 
 .quarter {
@@ -60,9 +66,6 @@ input[type=text] {
         overflow:scroll;
         max-height:1000px;
         transition:500ms;
-        table {
-            .bold;
-        }
     }
     &.collapsed {
         div {
@@ -71,13 +74,22 @@ input[type=text] {
     }
 }
 
-.non-player {
-    font-weight:normal;
-    display:none;
+.table-header {
+    padding:0 10px;
+    height:40px;
+    line-height:40px;
+    background-color:@c0;
+    vertical-align:middle;
+    * {
+        font-size:16px;
+    }
 }
 
-.bold {
-    font-weight:700;
+.non-player {
+    display:none;
+    td {
+        font-weight:normal;
+    }
 }
 
 @media all and (max-width: 420px) {

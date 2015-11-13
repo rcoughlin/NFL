@@ -14,7 +14,7 @@ try {
 const INPUTS = $('input:not([type=submit]):not([type=checkbox])'),
     VIEW_PLAYS_BUTTON = $('input[type=submit]'),
     SHOW_ALL_PLAYS_CHECKBOX = $('input[type=checkbox]'),
-    QUARTERS = $('.quarters');
+    QUARTERS = $('.quarter');
 
 if (ignore === false) {
 
@@ -50,12 +50,12 @@ if (ignore === false) {
             const INPUT_VALUES = getAllInputValues(),
                 QUARTER = $(this).closest('.quarter');
 
-            mixpanel.track('Show All Plays', {
+            mixpanel.track('Table Event', {
                 week: INPUT_VALUES.week,
                 year: INPUT_VALUES.year,
                 player: INPUT_VALUES.name,
                 quarter: QUARTER.attr('data-attr'),
-                action: QUARTER.hasClass('collapsed') ? 'expand' : 'collapse'
+                action: QUARTER.hasClass('collapsed') ? 'Expand' : 'Collapse'
             });
         });
     }

@@ -3,13 +3,14 @@ import { default as $ } from                '../../../bower_components/jquery/di
 
 // TODO Refactor the way this adds to the page
 const QUARTERS = $('.quarter');
+let tables = [];
 
 class PlayRow extends Component {
     render() {
         const row = this.props.row;
         return <tr className={this.props.row.hasPlayer ? '' : 'non-player'}>
             {Object.keys(row).filter(filterKeys).map((v, i) => {
-                const val = JSON.stringify(row[ v ]);
+                const val = row[ v ];
                 return <td key={i}>{val}</td>;
             })}
         </tr>;
@@ -20,7 +21,7 @@ class PlayTable extends Component {
     render() {
         const data = this.props.data;
         return <span>
-            Quarter {data[ 0 ].qtr}
+            <div className='table-header'>Quarter {data[ 0 ].qtr}</div>
             <div>
                 <table>
                     <thead>
@@ -65,7 +66,15 @@ function createQuarters(data, targetPlayer) {
 
     QUARTERS.each((i, v) => {
         let rows = playObj[ i + 1 ];
-        React.render(<PlayTable data={rows} />, v);
+        if (tables[ i ]) {
+
+            // Modify table data
+            table.rows = rows;
+        } else {
+            let table = React.render(<PlayTable data={rows} />, v);
+            tables.push(table);
+        }
+
     });
 }
 
