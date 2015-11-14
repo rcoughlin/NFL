@@ -4,14 +4,13 @@ import { default as $ } from                '../../../bower_components/jquery/di
 // TODO Refactor the way this adds to the page
 const QUARTERS = $('.quarter'),
     PLAYER_NAME_INPUT = $('input[name=name]');
-let tables = [];
 
 class PlayRow extends Component {
     render() {
         const row = this.props.row;
         return <tr className={this.props.row.hasPlayer ? '' : 'non-player'}>
             {Object.keys(row).filter(filterKeys).map((v, i) => {
-                const val = row[ v ];
+                const val = row.hasOwnProperty(v) ? row[ v ] : '';
                 return <td key={i}>{val}</td>;
             })}
         </tr>;
@@ -66,15 +65,7 @@ function createQuarters(data) {
 
     QUARTERS.each((i, v) => {
         let rows = playObj[ i + 1 ];
-        if (tables[ i ]) {
-
-            // Modify table data
-            table.rows = rows;
-        } else {
-            let table = React.render(<PlayTable data={rows} />, v);
-            tables.push(table);
-        }
-
+        React.render(<PlayTable data={rows} />, v);
     });
 }
 
