@@ -2,15 +2,15 @@ import React, { Component } from            '../../../bower_components/react/rea
 import { default as $ } from                '../../../bower_components/jquery/dist/jquery';
 
 // TODO Refactor the way this adds to the page
-const QUARTERS = $('.quarter');
-let tables = [];
+const QUARTERS = $('.quarter'),
+    PLAYER_NAME_INPUT = $('input[name=name]');
 
 class PlayRow extends Component {
     render() {
         const row = this.props.row;
         return <tr className={this.props.row.hasPlayer ? '' : 'non-player'}>
             {Object.keys(row).filter(filterKeys).map((v, i) => {
-                const val = row[ v ];
+                const val = row.hasOwnProperty(v) ? row[ v ] : '';
                 return <td key={i}>{val}</td>;
             })}
         </tr>;
@@ -22,7 +22,7 @@ class PlayTable extends Component {
         const data = this.props.data;
         return <span>
             <div className='table-header'>Quarter {data[ 0 ].qtr}</div>
-            <div>
+            <div className='table-container'>
                 <table>
                     <thead>
                         <tr>
@@ -40,10 +40,9 @@ class PlayTable extends Component {
     }
 }
 
-function createQuarters(data, targetPlayer) {
-    let playObj = {};
-
-    targetPlayer = targetPlayer.split(' ');
+function createQuarters(data) {
+    let playObj = {},
+        targetPlayer = PLAYER_NAME_INPUT.val().split(' ');
     targetPlayer = `${
         targetPlayer[ 0 ].charAt(0)
     }.${
@@ -66,15 +65,7 @@ function createQuarters(data, targetPlayer) {
 
     QUARTERS.each((i, v) => {
         let rows = playObj[ i + 1 ];
-        if (tables[ i ]) {
-
-            // Modify table data
-            table.rows = rows;
-        } else {
-            let table = React.render(<PlayTable data={rows} />, v);
-            tables.push(table);
-        }
-
+        React.render(<PlayTable data={rows} />, v);
     });
 }
 
