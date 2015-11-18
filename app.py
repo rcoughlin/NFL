@@ -42,13 +42,21 @@ def rushing_yards():
     games = fetch_games(year, week)
     players = nflgame.combine_game_stats(games)
 
-    messages = []
-    for player in players.rushing().sort('rushing_yds'):
-        messages.append('{} {} carries for {} yards and {} TDs'.format(
-            player, player.rushing_att, player.rushing_yds,
-            player.rushing_tds))
+    plays = []
 
-    return json.dumps(messages)
+    key = 'rushing_yds|{}|{}'.format(year, week)
+    data = REDIS.get(key)
+
+    if not (data and len(data)):
+        for player in players.rushing().sort('rushing_yds'):
+            plays.append('{} {} carries for {} yards and {} TDs'.format(
+                player, player.rushing_att, player.rushing_yds,
+                player.rushing_tds))
+        plays = set_data_on_redis_key(key, plays, True)
+    else:
+        plays = data
+
+    return plays
 
 
 @app.route('/plays_by_player.json', methods=['GET'])
@@ -68,24 +76,18 @@ def plays_by_player():
     plays = []
     if name and year and week:
         try:
-            print 'IN'
             key = 'plays_by_player|{}|{}'.format(year, week)
-            data = REDIS.get(key)
-            print 'DATA', data
+            data = fetch_data_from_redis_by_key(key)
             if not data:
                 data = fetch_plays(name, year, week)
-                print 'API'
-                REDIS.set(key, json.dumps(list(data)))
-                print 'SET'
+                plays = set_data_on_redis_key(key, [
+                    play.data for play in data
+                ], True)
             else:
-                data = json.loads(data)
-            for play in data:
-                print 'LOOP'
-                plays.append(play.data)
-        except TypeError as e:
-            print e
+                plays = data
+        except TypeError as e: pass
 
-    return json.dumps(plays)
+    return plays
 
 
 @app.route('/plays_by_team.json', methods=['GET'])
@@ -110,30 +112,17 @@ def plays_by_team():
         return e
 
     plays = []
-    api_called = False
     if team and year and week:
         try:
-            print 'IN', json.loads
             key = 'plays_by_team|{}|{}|{}'.format(player.name, year, week)
-            data = REDIS.get(key)
-            print 'DATA', type(data)
-            if not (data and len(data)):
-                print 'HIT REDIS'
+            data = fetch_data_from_redis_by_key(key)
+            if not data:
                 data = nflgame.combine_plays(fetch_games(year, week, team))
-
-                plays = json.dumps([
+                plays = set_data_on_redis_key(key, [
                     play.data for play in data if team == play.team
-                ])
-                print 'API'
-                REDIS.set(key, plays)
-                print 'SET'
+                ], True)
             else:
-                print 'POST DATA', data
                 plays = data
-            # for play in data:
-            #     print 'LOOP', play
-            #     if team == play.team:
-            #         plays.append(play.data)
         except TypeError as e: pass
 
     return plays
@@ -159,6 +148,25 @@ def fetch_plays(name, year, week):
     else:
         return None
 
+
+def fetch_data_from_redis_by_key(key, parse=False):
+    data = REDIS.get(key)
+    if data and len(data):
+        if parse == True:
+            return json.parse(data)
+        else:
+            return data
+    else:
+        return None
+
+def set_data_on_redis_key(key, data, parse=False):
+    redis_data = json.dumps(data)
+    REDIS.set(key, data)
+
+    if parse == True:
+        return redis_data
+    else:
+        return data
 
 def parse_request_arguments(args):
     name, year, week = None, None, None
