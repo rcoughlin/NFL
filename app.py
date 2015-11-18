@@ -30,6 +30,11 @@ def serve_play_by_play_asset():
     return send_static_file('html/plays.html')
 
 
+@app.route('/neural', methods=['GET'])
+def serve_play_by_play_asset():
+    return send_static_file('html/neural.html')
+
+
 @app.route('/<path:path>', methods=['GET'])
 def serve_static_assets(path):
     return send_static_file(path)
