@@ -31,7 +31,7 @@ def serve_play_by_play_asset():
 
 
 @app.route('/neural', methods=['GET'])
-def serve_play_by_play_asset():
+def serve_neural_network_asset():
     return send_static_file('html/neural.html')
 
 
@@ -158,7 +158,7 @@ def fetch_data_from_redis_by_key(key, parse=False):
     data = REDIS.get(key)
     if data and len(data):
         if parse == True:
-            return json.parse(data)
+            return json.loads(data)
         else:
             return data
     else:
@@ -166,7 +166,7 @@ def fetch_data_from_redis_by_key(key, parse=False):
 
 def set_data_on_redis_key(key, data, parse=False):
     redis_data = json.dumps(data)
-    REDIS.set(key, data)
+    REDIS.set(key, redis_data)
 
     if parse == True:
         return redis_data
