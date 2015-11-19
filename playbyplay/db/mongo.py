@@ -9,6 +9,7 @@ from pymongo import MongoClient
 REDIS_URL = os.environ.get('REDIS_URL') or '0.0.0.0:6379'
 REDIS = redis.from_url(REDIS_URL)
 
+
 # TODO configure this with environment variables on an env by env basis
 client = MongoClient('localhost', 27017)
 db = client['playbyplay']
