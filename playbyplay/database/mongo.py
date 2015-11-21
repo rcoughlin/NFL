@@ -45,7 +45,7 @@ def persist_play_data():
             for i, player_list in players.iteritems():
                 for player in player_list:
                     if player['playerName']:
-                        player_uuid = uuid.uuid4()
+                        player_uuid = str(uuid.uuid4())
                         name = player['playerName']
                         team = player['clubcode']
 
@@ -61,12 +61,6 @@ def persist_play_data():
                             db_players.append(player_table.insert(db_player))
                         else: db_players.append(player_uuid)
 
-            print db_players, play_table.find({
-                'year': play['year'],
-                'qtr': play['qtr'],
-                'posteam': play['posteam'],
-                'time': play['time']
-            }).count() 
             play['players'] = db_players
             if play_table.find({
                 'year': play['year'],
@@ -74,7 +68,7 @@ def persist_play_data():
                 'posteam': play['posteam'],
                 'time': play['time']
             }).count() < 1:
-                play['_id'] = uuid.uuid4()
+                play['_id'] = str(uuid.uuid4())
                 play_table.insert(play)
 
 if __name__ == '__main__':

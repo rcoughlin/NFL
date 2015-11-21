@@ -23,11 +23,29 @@ def input_space(year):
     We have no indication of whether we have viable players yet, does our
     player have plays in our input year
     '''
-    for player in players:
-        for play in plays:
-            for uuid in play['players']:
-                print uuid, player['_id']
-            if player['_id'] in play['players']: pass
+    player_plays = {}
+    for play in plays:
+
+        '''
+        Who is really responsible for the play? attribute the yards to
+        both players, weighting will work out
+        TODO kickers and qbs
+        '''
+        for player in play['players']:
+            db_player = player_table.find({'_id': player})
+            if not player_plays.get(player, None):
+                player_plays[player] = {
+                    'yards': [],
+                    'weighted_yards_avg': 0
+                }
+
+            player_plays[player]['yards'].append(play['ydsnet'])
+            player_plays[player]['weighted_yards_avg'] = np.average(
+                player_plays[player]['yards'])
+
+    # Noice: players and their yearly plays, all set up
+    # TODO not keying of players and plays yet
+    print player_plays
 
 
 # Sigmoid: http://mathworld.wolfram.com/SigmoidFunction.html
