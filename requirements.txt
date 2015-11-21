@@ -9,6 +9,7 @@ Jinja2==2.8
 MarkupSafe==0.23
 nfldb==0.2.13
 nflgame==1.2.18
+numpy==1.10.1
 paramiko==1.16.0
 prettytable==0.7.2
 psycopg2==2.6.1
