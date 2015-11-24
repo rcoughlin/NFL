@@ -7,17 +7,62 @@ import nflgame
 import json
 import requests
 
-from flask import Flask
+from flask import Flask, url_for
+from flask import session
 from flask import jsonify
 from flask import request
+from flask import redirect
+from flask_oauth import OAuth
 from flask.ext.cors import CORS
 
 
 app = Flask(__name__, static_url_path='/static')
 cors = CORS(app)
 
+oauth = OAuth()
+twitter = oauth.remote_app('twitter',
+    base_url='https://api.twitter.com/1/',
+    request_token_url='https://api.twitter.com/oauth/request_token',
+    access_token_url='https://api.twitter.com/oauth/access_token',
+    authorize_url='https://api.twitter.com/oauth/authenticate',
+    consumer_key=os.environ.get('TWITTER_CONSUMER_KEY'),
+    consumer_secret=os.environ.get('TWITTER_CONSUMER_SECRET')
+)
+
 REDIS_URL = os.environ.get('REDIS_URL') or '0.0.0.0:6379'
 REDIS = redis.from_url(REDIS_URL)
+
+
+@twitter.tokengetter
+def get_twitter_token(token=None):
+    return session.get('twitter_token')
+
+
+@app.route('/login')
+def login():
+    try:
+        return twitter.authorize(callback=url_for('oauth_authorized',
+            next=request.args.get('next') or request.referrer or None))
+    except Exception as e:
+        print e
+
+
+@app.route('/oauth-authorized')
+@twitter.authorized_handler
+def oauth_authorized(resp):
+    next_url = request.args.get('next') or url_for('index')
+    if resp is None:
+        flash(u'You denied the request to sign in.')
+        return redirect(next_url)
+
+    session['twitter_token'] = (
+        resp['oauth_token'],
+        resp['oauth_token_secret']
+    )
+    session['twitter_user'] = resp['screen_name']
+
+    flash('You were signed in as %s' % resp['screen_name'])
+    return redirect(next_url)
 
 
 @app.route('/', methods=['GET'])
@@ -25,11 +70,13 @@ def serve_index_asset():
     return send_static_file('index.html')
 
 
+# TODO verify auth
 @app.route('/plays', methods=['GET'])
 def serve_play_by_play_asset():
     return send_static_file('html/plays.html')
 
 
+# TODO verify auth
 @app.route('/neural', methods=['GET'])
 def serve_neural_network_asset():
     return send_static_file('html/neural.html')

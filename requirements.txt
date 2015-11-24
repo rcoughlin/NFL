@@ -2,6 +2,7 @@ beautifulsoup4==4.4.1
 enum34==1.0.4
 Flask==0.10.1
 Flask-Cors==2.1.0
+Flask-OAuth==0.12
 Flask-PyMongo==0.4.0
 httplib2==0.9.2
 itsdangerous==0.24
@@ -10,6 +11,7 @@ MarkupSafe==0.23
 nfldb==0.2.13
 nflgame==1.2.18
 numpy==1.10.1
+oauth2==1.9.0.post1
 paramiko==1.16.0
 prettytable==0.7.2
 psycopg2==2.6.1
