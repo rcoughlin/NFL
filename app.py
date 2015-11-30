@@ -17,11 +17,12 @@ from flask.ext.cors import CORS
 
 
 app = Flask(__name__, static_url_path='/static')
+app.secret_key = os.urandom(24)
 cors = CORS(app)
 
 oauth = OAuth()
 twitter = oauth.remote_app('twitter',
-    base_url='https://api.twitter.com/1/',
+    base_url='https://api.twitter.com/1.1/',
     request_token_url='https://api.twitter.com/oauth/request_token',
     access_token_url='https://api.twitter.com/oauth/access_token',
     authorize_url='https://api.twitter.com/oauth/authenticate',
@@ -38,55 +39,73 @@ def get_twitter_token(token=None):
     return session.get('twitter_token')
 
 
+# def login_required(method):
+#     def wrapper(*args, **kwargs):
+#         if session['authenticated']:
+#             return method(*args, **kwargs)
+#         else:
+#             redirect('/login')
+#     return wrapper
+
+
 @app.route('/login')
 def login():
     try:
         return twitter.authorize(callback=url_for('oauth_authorized',
             next=request.args.get('next') or request.referrer or None))
     except Exception as e:
-        print e
+        raise e
+
+
+@app.route('/logout')
+def logout():
+    session['__invalidate__'] = True
+    session['authenticated'] = False
+    return redirect('/login')
 
 
 @app.route('/oauth-authorized')
 @twitter.authorized_handler
-def oauth_authorized(resp):
-    next_url = request.args.get('next') or url_for('index')
-    if resp is None:
-        flash(u'You denied the request to sign in.')
-        return redirect(next_url)
+def oauth_authorized(response):
+    next_url = request.args.get('next', '/plays')
+    if response is None:
+        return redirect('/login')
 
     session['twitter_token'] = (
-        resp['oauth_token'],
-        resp['oauth_token_secret']
+        response['oauth_token'],
+        response['oauth_token_secret'],
     )
-    session['twitter_user'] = resp['screen_name']
+    sesion['authenticated'] = True
 
-    flash('You were signed in as %s' % resp['screen_name'])
+    session['twitter_user'] = response['screen_name']
     return redirect(next_url)
 
 
+@login_required
 @app.route('/', methods=['GET'])
 def serve_index_asset():
     return send_static_file('index.html')
 
 
-# TODO verify auth
+@login_required
 @app.route('/plays', methods=['GET'])
 def serve_play_by_play_asset():
     return send_static_file('html/plays.html')
 
 
-# TODO verify auth
 @app.route('/neural', methods=['GET'])
+@login_required
 def serve_neural_network_asset():
     return send_static_file('html/neural.html')
 
 
 @app.route('/<path:path>', methods=['GET'])
+@login_required
 def serve_static_assets(path):
     return send_static_file(path)
 
 
+@authenticate
 @app.route('/rushing_yds.json', methods=['GET'])
 def rushing_yards():
     name, year, week = parse_request_arguments(request.args)
@@ -112,6 +131,7 @@ def rushing_yards():
 
 
 @app.route('/plays_by_player.json', methods=['GET'])
+@login_required
 def plays_by_player():
     name, year, week = parse_request_arguments(request.args)
 
@@ -143,6 +163,7 @@ def plays_by_player():
 
 
 @app.route('/plays_by_team.json', methods=['GET'])
+@login_required
 def plays_by_team():
     name, year, week = parse_request_arguments(request.args)
     team = None
