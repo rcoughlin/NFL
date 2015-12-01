@@ -39,13 +39,16 @@ def get_twitter_token(token=None):
     return session.get('twitter_token')
 
 
-# def login_required(method):
-#     def wrapper(*args, **kwargs):
-#         if session['authenticated']:
-#             return method(*args, **kwargs)
-#         else:
-#             redirect('/login')
-#     return wrapper
+def login_required(method):
+    def wrapper(*args, **kwargs):
+        if session.get('authenticated', None):
+            return method(*args, **kwargs)
+        else:
+            return redirect('login')
+
+    wrapper.__name__ = method.__name__
+    wrapper.__doc__ = method.__doc__
+    return wrapper
 
 
 @app.route('/login')
@@ -58,37 +61,38 @@ def login():
 
 
 @app.route('/logout')
+@login_required
 def logout():
     session['__invalidate__'] = True
     session['authenticated'] = False
-    return redirect('/login')
+    return redirect('plays')
 
 
 @app.route('/oauth-authorized')
 @twitter.authorized_handler
 def oauth_authorized(response):
-    next_url = request.args.get('next', '/plays')
+    next_url = request.args.get('next', 'plays')
     if response is None:
-        return redirect('/login')
+        return redirect('login')
 
     session['twitter_token'] = (
-        response['oauth_token'],
-        response['oauth_token_secret'],
+        response.get('oauth_token'),
+        response.get('oauth_token_secret'),
     )
-    sesion['authenticated'] = True
+    session['authenticated'] = True
+    session['twitter_user'] = response.get('screen_name')
 
-    session['twitter_user'] = response['screen_name']
     return redirect(next_url)
 
 
-@login_required
 @app.route('/', methods=['GET'])
+@login_required
 def serve_index_asset():
     return send_static_file('index.html')
 
 
-@login_required
 @app.route('/plays', methods=['GET'])
+@login_required
 def serve_play_by_play_asset():
     return send_static_file('html/plays.html')
 
@@ -105,8 +109,8 @@ def serve_static_assets(path):
     return send_static_file(path)
 
 
-@authenticate
 @app.route('/rushing_yds.json', methods=['GET'])
+@login_required
 def rushing_yards():
     name, year, week = parse_request_arguments(request.args)
 
