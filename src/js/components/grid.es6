@@ -47,14 +47,15 @@ function createQuarters(data) {
         targetPlayer[ 0 ].charAt(0)
     }.${
         targetPlayer.pop()
-    }`;
+    }`.toLowerCase();
 
     // Loop over the plays, adding a reference to our obj for each one.
     // Filter is no good
     data.forEach(v => {
         let qtr = v.qtr;
 
-        v.hasPlayer = getPlayersFromPlayData(v).indexOf(targetPlayer) > -1;
+        v.hasPlayer = getPlayersFromPlayData(v).map(v => v.toLowerCase())
+            .indexOf(targetPlayer) > -1;
 
         if (!playObj.hasOwnProperty(qtr)) {
             playObj[ qtr ] = [];
@@ -82,7 +83,7 @@ function getPlayersFromPlayData(play) {
 }
 
 function filterKeys(v) {
-    return ['time', 'desc', 'down'].indexOf(v) > -1;
+    return [ 'time', 'desc', 'down' ].indexOf(v) > -1;
 }
 
 export default createQuarters;
