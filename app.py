@@ -171,8 +171,11 @@ def plays_by_player():
 def plays_by_team():
     name, year, week = parse_request_arguments(request.args)
     team = None
-
     player = None
+
+    # The NFL API only recognizes proper upper case names
+    name = ' '.join(n.capitalize() for n in name.split(' '))
+
     players = fetch_player(name)
     if len(players) > 0:
         player = players[0]
