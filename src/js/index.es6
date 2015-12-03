@@ -39,7 +39,7 @@ $('form').submit(function(e) {
 
             // For team plays endpoint
             if (playByPlay) {
-                grid(data, obj.name);
+                grid(data);
             } else {
 
                 // For root "yards" endpoint

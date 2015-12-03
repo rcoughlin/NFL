@@ -11,6 +11,10 @@
     font:menu;
 }
 
+html, body {
+    height:auto;
+}
+
 body {
     margin:0 auto;
     padding:25px;
@@ -47,6 +51,11 @@ input[type=text] {
     width:300px;
 }
 
+table {
+    margin-bottom:0;
+    width:100%;
+}
+
 table tr:nth-of-type(even) {
     background-color:white;
 }
@@ -62,13 +71,14 @@ tr td, .bold {
 }
 
 .quarter {
-    div {
+    cursor:pointer;
+    .table-container {
         overflow:scroll;
-        max-height:1000px;
+        max-height:2000px;
         transition:500ms;
     }
     &.collapsed {
-        div {
+        .table-container {
             max-height:0;
         }
     }

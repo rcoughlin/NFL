@@ -63,9 +63,8 @@ function doWebpack(cb) {
             throw new Error(e);
         }
 
-        cb();
-        // gulp.src(`${JS_DIR}/${FILENAME}`)
-        //     .pipe(uglify({ mangle: false }))
-        //     .pipe(gulp.dest(JS_DIR).on('end', cb));
+        gulp.src(`${JS_DIR}/${FILENAME}`)
+            .pipe(uglify({ mangle: false }))
+            .pipe(gulp.dest(JS_DIR).on('end', cb));
     });
 }
