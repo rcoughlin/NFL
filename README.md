@@ -22,5 +22,5 @@ pip install -r requirements.txt
 python app.py
 ```
 
-# Deployment
+### Deployment
 See the [Deploy Markdown](https://github.com/rcoughlin/NFL/blob/master/md/README.md) for more detail
