@@ -1,6 +1,6 @@
 {
   "name": "nfl",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Playing around with Flask - a simple app that queries nflgame api",
   "main": "index.js",
   "scripts": {
