@@ -17,12 +17,14 @@ from flask.ext.cors import CORS
 
 
 # Some application level configurations
+OAUTH_ENABLED = os.getenv('OAUTH_ENABLED', False)
+REDIS_URL = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
+REDIS = redis.from_url(REDIS_URL)
+
 app = Flask(__name__, static_url_path='/static')
 app.secret_key = os.urandom(24)
 cors = CORS(app)
-OAUTH_ENABLED = os.getenv('OAUTH_ENABLED', False)
-oauth = OAuth()
-twitter = oauth.remote_app('twitter',
+twitter = OAuth().remote_app('twitter',
     base_url='https://api.twitter.com/1.1/',
     request_token_url='https://api.twitter.com/oauth/request_token',
     access_token_url='https://api.twitter.com/oauth/access_token',
@@ -30,8 +32,6 @@ twitter = oauth.remote_app('twitter',
     consumer_key=os.environ.get('TWITTER_CONSUMER_KEY', 0),
     consumer_secret=os.environ.get('TWITTER_CONSUMER_SECRET', 0)
 )
-REDIS_URL = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
-REDIS = redis.from_url(REDIS_URL)
 
 
 @twitter.tokengetter
@@ -87,7 +87,7 @@ def oauth_authorized(response):
 
 
 @app.route('/', methods=['GET'])
-# @login_required
+@login_required
 def serve_index_asset():
     return send_static_file('index.html')
 
