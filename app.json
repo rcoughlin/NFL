@@ -2,6 +2,9 @@
     "website": "https://nflplaybyplay.herokuapp.com/plays",
     "repository": "https://github.com/rcoughlin/NFL.git",
     "success_url": "/plays",
+    "addons": [
+        "redistogo:nano"
+    ],
     "buildpacks": [
         {
             "url": "https://github.com/heroku/heroku-buildpack-nodejs"
