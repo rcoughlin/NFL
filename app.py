@@ -30,7 +30,7 @@ twitter = oauth.remote_app('twitter',
     consumer_secret=os.environ.get('TWITTER_CONSUMER_SECRET')
 )
 
-REDIS_URL = os.environ.get('REDIS_URL') or '0.0.0.0:6379'
+REDIS_URL = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
 REDIS = redis.from_url(REDIS_URL)
 
 
@@ -61,7 +61,7 @@ def login():
 
 
 @app.route('/logout')
-@login_required
+# @login_required
 def logout():
     session['__invalidate__'] = True
     session['authenticated'] = False
@@ -86,31 +86,31 @@ def oauth_authorized(response):
 
 
 @app.route('/', methods=['GET'])
-@login_required
+# @login_required
 def serve_index_asset():
     return send_static_file('index.html')
 
 
 @app.route('/plays', methods=['GET'])
-@login_required
+# @login_required
 def serve_play_by_play_asset():
     return send_static_file('html/plays.html')
 
 
 @app.route('/neural', methods=['GET'])
-@login_required
+# @login_required
 def serve_neural_network_asset():
     return send_static_file('html/neural.html')
 
 
 @app.route('/<path:path>', methods=['GET'])
-@login_required
+# @login_required
 def serve_static_assets(path):
     return send_static_file(path)
 
 
 @app.route('/rushing_yds.json', methods=['GET'])
-@login_required
+# @login_required
 def rushing_yards():
     name, year, week = parse_request_arguments(request.args)
 
@@ -135,7 +135,7 @@ def rushing_yards():
 
 
 @app.route('/plays_by_player.json', methods=['GET'])
-@login_required
+# @login_required
 def plays_by_player():
     name, year, week = parse_request_arguments(request.args)
 
@@ -167,7 +167,7 @@ def plays_by_player():
 
 
 @app.route('/plays_by_team.json', methods=['GET'])
-@login_required
+# @login_required
 def plays_by_team():
     name, year, week = parse_request_arguments(request.args)
     team = None
@@ -239,6 +239,7 @@ def fetch_data_from_redis_by_key(key, parse=False):
     else:
         return None
 
+
 def set_data_on_redis_key(key, data, parse=False):
     redis_data = json.dumps(data)
     REDIS.set(key, redis_data)
@@ -247,6 +248,7 @@ def set_data_on_redis_key(key, data, parse=False):
         return redis_data
     else:
         return data
+
 
 def parse_request_arguments(args):
     name, year, week = None, None, None
