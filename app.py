@@ -16,20 +16,20 @@ from flask_oauth import OAuth
 from flask.ext.cors import CORS
 
 
+# Some application level configurations
 app = Flask(__name__, static_url_path='/static')
 app.secret_key = os.urandom(24)
 cors = CORS(app)
-
+OAUTH_ENABLED = os.getenv('OAUTH_ENABLED', False)
 oauth = OAuth()
 twitter = oauth.remote_app('twitter',
     base_url='https://api.twitter.com/1.1/',
     request_token_url='https://api.twitter.com/oauth/request_token',
     access_token_url='https://api.twitter.com/oauth/access_token',
     authorize_url='https://api.twitter.com/oauth/authenticate',
-    consumer_key=os.environ.get('TWITTER_CONSUMER_KEY'),
-    consumer_secret=os.environ.get('TWITTER_CONSUMER_SECRET')
+    consumer_key=os.environ.get('TWITTER_CONSUMER_KEY', 0),
+    consumer_secret=os.environ.get('TWITTER_CONSUMER_SECRET', 0)
 )
-
 REDIS_URL = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
 REDIS = redis.from_url(REDIS_URL)
 
@@ -41,7 +41,8 @@ def get_twitter_token(token=None):
 
 def login_required(method):
     def wrapper(*args, **kwargs):
-        if session.get('authenticated', None):
+        if OAUTH_ENABLED == True and session.get('authenticated', None) or \
+            OAUTH_ENABLED == False:
             return method(*args, **kwargs)
         else:
             return redirect('login')
@@ -61,7 +62,7 @@ def login():
 
 
 @app.route('/logout')
-# @login_required
+@login_required
 def logout():
     session['__invalidate__'] = True
     session['authenticated'] = False
@@ -92,25 +93,25 @@ def serve_index_asset():
 
 
 @app.route('/plays', methods=['GET'])
-# @login_required
+@login_required
 def serve_play_by_play_asset():
     return send_static_file('html/plays.html')
 
 
 @app.route('/neural', methods=['GET'])
-# @login_required
+@login_required
 def serve_neural_network_asset():
     return send_static_file('html/neural.html')
 
 
 @app.route('/<path:path>', methods=['GET'])
-# @login_required
+@login_required
 def serve_static_assets(path):
     return send_static_file(path)
 
 
 @app.route('/rushing_yds.json', methods=['GET'])
-# @login_required
+@login_required
 def rushing_yards():
     name, year, week = parse_request_arguments(request.args)
 
@@ -135,7 +136,7 @@ def rushing_yards():
 
 
 @app.route('/plays_by_player.json', methods=['GET'])
-# @login_required
+@login_required
 def plays_by_player():
     name, year, week = parse_request_arguments(request.args)
 
@@ -167,7 +168,7 @@ def plays_by_player():
 
 
 @app.route('/plays_by_team.json', methods=['GET'])
-# @login_required
+@login_required
 def plays_by_team():
     name, year, week = parse_request_arguments(request.args)
     team = None
@@ -268,5 +269,5 @@ def send_static_file(path):
 
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
+    port = int(os.getenv('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
