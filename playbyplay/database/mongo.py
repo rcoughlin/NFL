@@ -64,6 +64,7 @@ def persist_play_data():
             play['players'] = db_players
             if play_table.find({
                 'year': play['year'],
+                'week': play['week'],
                 'qtr': play['qtr'],
                 'posteam': play['posteam'],
                 'time': play['time']
